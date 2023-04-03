@@ -20,6 +20,15 @@ const getAllUsers=(req,res)=>{
 const saveUser =(req,res)=>{
     const data = require('../public/users.json')
      const newUser = req.body
+
+     // Check if all required properties are present in the request body
+     if( !newUser.name || !newUser.gender || !newUser.contact || !newUser.address || !newUser.photoUrl){
+        return res.status(400).json({
+            success: false,
+            message: 'Missing required properties',
+            data: null
+        })
+     }
       //generate unique id for the new user
     newUser.id = data.users.length + 1
     //  const updatedUser =[ ...data.users, newUser]
@@ -30,19 +39,20 @@ const saveUser =(req,res)=>{
         if(err){
             // res.write('data failed to write')
             console.log(err);
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to save user data',
+                data: null
+              });
         }
-        else{
-            // res.write(data)
-            // console.log(data);
-        }
-        res.end()
-     })
-     res.status(200).json({
-        success: 'true',
-        message: 'success',
-        data: newUser
-     })
-}
+    console.log(data);
+    return res.status(200).json({
+      success: true,
+      message: 'User data saved successfully',
+      data: newUser
+    });
+  });
+};
 
 const updateUser =(req,res)=>{
     const data = require('../public/users.json')
